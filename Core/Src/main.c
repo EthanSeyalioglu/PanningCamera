@@ -1,5 +1,7 @@
 #include "tim2_pwm.h"
+#include "uart.h"
 #include <stdint.h>
+#include <stdio.h>
 
 uint8_t position;
 uint16_t pulse_width;
@@ -8,9 +10,14 @@ uint16_t get_pulse_width(uint8_t position);
 
 int main(void)
 {
+  uart_init();
+  uart_tx_start();
+  printf("UART Initialized\n\n");
+  
   tim2_pwm_init();
   tim2_servo_pwm_config();
   tim2_pwm_start();
+  printf("PWM Initialized\n\n");
 
   position = 1;
 
@@ -20,7 +27,7 @@ int main(void)
 
     pulse_width = get_pulse_width(position);
 
-    servo_set_position(1400);
+    servo_set_position(pulse_width);
 
     if (position > 0)
     {
