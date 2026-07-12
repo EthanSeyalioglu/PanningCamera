@@ -1,5 +1,5 @@
 #include "thumbstick.h"
-#include "tim2_pwm.h"
+#include "servos_pwm.h"
 #include "uart.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -39,11 +39,14 @@ int main(void)
 
     tim2_pwm_init();
     tim2_servo_pwm_config();
-    tim2_pwm_start();
+    tim3_pwm_init();
+    tim3_servo_pwm_config();
+    pwm_start();
     printf("PWM Initialized\n\n");
 
 
     pulse_width = SERVO_CENTER;
+    servo_x_set_position(pulse_width);
 
     while (1)
     {
@@ -63,16 +66,9 @@ int main(void)
             pulse_width = (pulse_width < SERVO_MIN ? SERVO_MIN : pulse_width); // 600 floor
         }
 
-        servo_set_position(pulse_width);
+        servo_x_set_position(pulse_width);
 
         for (int i = 0; i < 10000; i++) {}
-
-        // printf("Pulse Width: %d\n", pulse_width);
-
-        // if (pulse_width > 2500 || pulse_width < 500)
-        // {
-        //     polarity = (polarity - 1) * -1;
-        // }
 
         printf("Pulse Width: %d\n", pulse_width);
         printf("Thumbstick X: %d\n", thumbstick_values[0]);
