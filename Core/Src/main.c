@@ -6,12 +6,12 @@
 #include <stdlib.h>
 
 #define THUMBSTICK_CENTER       512
-#define THUMBSTICK_DEADZONE     20
+#define THUMBSTICK_DEADZONE     50
 
 #define SERVO_MIN               500
 #define SERVO_CENTER            1400
 #define SERVO_MAX               2400
-#define SERVO_STEP              100
+#define SERVO_STEP              20
 
 typedef enum
 {
@@ -20,14 +20,14 @@ typedef enum
     RIGHT = 1
 } ServoDirection;
 
-uint16_t get_pulse_width(uint8_t position);
 ServoDirection thumbstick_get_direction(int thumbstick_val_x);
+uint16_t update_pulse_width(ServoDirection direction, uint16_t pulse_width);
 
 int main(void)
 {
-    uint16_t pulse_width;
+    uint16_t pulse_width_x, pulse_width_y;
     int thumbstick_values[2];
-    ServoDirection direction;
+    ServoDirection direction_x, direction_y;
 
     uart_init();
     uart_tx_start();
@@ -45,39 +45,33 @@ int main(void)
     printf("PWM Initialized\n\n");
 
 
-    pulse_width = SERVO_CENTER;
-    servo_x_set_position(pulse_width);
+    pulse_width_x = pulse_width_y = SERVO_CENTER;
+
+    servo_x_set_position(pulse_width_x);
+    servo_y_set_position(pulse_width_y);
 
     while (1)
     {
         adc_thumbstick_scan();
         adc_thumbstick_read(thumbstick_values);
 
-        direction = thumbstick_get_direction(thumbstick_values[0]);
+        direction_x = thumbstick_get_direction(thumbstick_values[0]);
+        direction_y = thumbstick_get_direction(thumbstick_values[1]);
 
-        if (direction == RIGHT)
-        {
-            pulse_width += SERVO_STEP;
-            pulse_width = (pulse_width > SERVO_MAX ? SERVO_MAX : pulse_width); // 2400 ceiling
-        }
-        else if (direction == LEFT)
-        {
-            pulse_width -= SERVO_STEP;
-            pulse_width = (pulse_width < SERVO_MIN ? SERVO_MIN : pulse_width); // 600 floor
-        }
+        pulse_width_x = update_pulse_width(direction_x, pulse_width_x);
+        pulse_width_y = update_pulse_width(direction_y, pulse_width_y);
 
-        servo_x_set_position(pulse_width);
+        servo_x_set_position(pulse_width_x);
+        servo_y_set_position(pulse_width_y);
 
         for (int i = 0; i < 10000; i++) {}
 
-        printf("Pulse Width: %d\n", pulse_width);
+        printf("Pulse Width: %d\n", pulse_width_x);
         printf("Thumbstick X: %d\n", thumbstick_values[0]);
-        printf("Servo Direction: %d\n\n", direction);
+        printf("Servo Direction: %d\n\n", direction_x);
         // printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
     }
 }
-
-// pulse width 500 is starting position, 2500 is ending
 
 
 ServoDirection thumbstick_get_direction(int thumbstick_val_x)
@@ -90,4 +84,22 @@ ServoDirection thumbstick_get_direction(int thumbstick_val_x)
     {
         return CENTER;
     }
+}
+
+uint16_t update_pulse_width(ServoDirection direction, uint16_t pulse_width)
+{
+    uint16_t result = pulse_width;
+
+    if (direction == RIGHT)
+    {
+        result += SERVO_STEP;
+        result = (result > SERVO_MAX ? SERVO_MAX : result); // 2400 ceiling
+    }
+    else if (direction == LEFT)
+    {
+        result -= SERVO_STEP;
+        result = (result < SERVO_MIN ? SERVO_MIN : result); // 600 floor
+    }
+
+    return result;
 }

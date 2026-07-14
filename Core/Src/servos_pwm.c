@@ -9,7 +9,7 @@
 #define TIM_CCMR1_OC1M_PWM1     (TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2)
 
 #define SERVO_TIMER_PSC         16 - 1
-#define SERVO_TIMER_ARR         2000 - 1
+#define SERVO_TIMER_ARR         20000 - 1
 #define SERVO_CENTER_PULSE      1400
 
 
@@ -69,7 +69,7 @@ void tim3_pwm_init(void)
     GPIOA->MODER &= ~GPIO_MODER_MODER6;
     GPIOA->MODER |= GPIO_MODER6_AF;
 
-    GPIOA->AFR[0] &= ~GPIO_AFRL_AFSEL5;
+    GPIOA->AFR[0] &= ~GPIO_AFRL_AFSEL6;
     GPIOA->AFR[0] |= GPIO_PA6_AF2;    
 
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -124,7 +124,6 @@ void pwm_stop(void)
 void servo_x_set_position(uint16_t pulse_width)
 {
     TIM2->CCR1 = pulse_width;
-    printf("CALLED");
 }
 
 void servo_y_set_position(uint16_t pulse_width)
