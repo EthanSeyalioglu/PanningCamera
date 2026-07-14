@@ -1,7 +1,9 @@
+#include "systick.h"
 #include "thumbstick.h"
 #include "servos_pwm.h"
 #include "servo_control.h"
 #include "uart.h"
+#include "systick.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +17,8 @@ int main(void)
     uint16_t pulse_width_x, pulse_width_y;
     int thumbstick_values[2];
     ServoDirection direction_x, direction_y;
+    uint32_t current_system_tick;
+    uint32_t last_servo_update;
 
     uart_init();
     uart_tx_start();
@@ -37,6 +41,10 @@ int main(void)
     servo_x_set_position(pulse_width_x);
     servo_y_set_position(pulse_width_y);
 
+    systick_init_ms(1);
+
+    last_servo_update = system_get_ticks();
+
     while (1)
     {
         adc_thumbstick_scan();
@@ -45,13 +53,17 @@ int main(void)
         direction_x = thumbstick_get_direction(thumbstick_values[0]);
         direction_y = thumbstick_get_direction(thumbstick_values[1]);
 
-        pulse_width_x = update_pulse_width(direction_x, pulse_width_x);
-        pulse_width_y = update_pulse_width(direction_y, pulse_width_y);
+        // current_system_tick = system_get_ticks();
+        // if (current_system_tick - last_servo_update >= 5)
+        // {
+            pulse_width_x = update_pulse_width(direction_x, pulse_width_x);
+            pulse_width_y = update_pulse_width(direction_y, pulse_width_y);
 
-        servo_x_set_position(pulse_width_x);
-        servo_y_set_position(pulse_width_y);
-
-        for (int i = 0; i < 5000; i++) {}
+            servo_x_set_position(pulse_width_x);
+            servo_y_set_position(pulse_width_y);
+            last_servo_update = current_system_tick;
+        // }
+        for (int i = 0; i < 9000; i++) {}
 
         printf("Pulse Width: %d\n", pulse_width_x);
         printf("Thumbstick X: %d\n", thumbstick_values[0]);
