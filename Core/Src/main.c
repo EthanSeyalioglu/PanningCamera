@@ -1,24 +1,11 @@
 #include "thumbstick.h"
 #include "servos_pwm.h"
+#include "servo_control.h"
 #include "uart.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#define THUMBSTICK_CENTER       512
-#define THUMBSTICK_DEADZONE     50
-
-#define SERVO_MIN               500
-#define SERVO_CENTER            1400
-#define SERVO_MAX               2400
-#define SERVO_STEP              20
-
-typedef enum
-{
-    LEFT = -1,
-    CENTER = 0,
-    RIGHT = 1
-} ServoDirection;
 
 ServoDirection thumbstick_get_direction(int thumbstick_val_x);
 uint16_t update_pulse_width(ServoDirection direction, uint16_t pulse_width);
@@ -71,35 +58,4 @@ int main(void)
         printf("Servo Direction: %d\n\n", direction_x);
         // printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
     }
-}
-
-
-ServoDirection thumbstick_get_direction(int thumbstick_val_x)
-{
-    if (abs(thumbstick_val_x - THUMBSTICK_CENTER) > THUMBSTICK_DEADZONE)
-    {
-        return (thumbstick_val_x >= THUMBSTICK_CENTER ? RIGHT : LEFT);
-    }
-    else
-    {
-        return CENTER;
-    }
-}
-
-uint16_t update_pulse_width(ServoDirection direction, uint16_t pulse_width)
-{
-    uint16_t result = pulse_width;
-
-    if (direction == RIGHT)
-    {
-        result += SERVO_STEP;
-        result = (result > SERVO_MAX ? SERVO_MAX : result); // 2400 ceiling
-    }
-    else if (direction == LEFT)
-    {
-        result -= SERVO_STEP;
-        result = (result < SERVO_MIN ? SERVO_MIN : result); // 600 floor
-    }
-
-    return result;
 }
