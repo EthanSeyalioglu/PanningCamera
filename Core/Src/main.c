@@ -51,7 +51,7 @@ int main(void)
         servo_x_set_position(pulse_width_x);
         servo_y_set_position(pulse_width_y);
 
-        for (int i = 0; i < 10000; i++) {}
+        for (int i = 0; i < 5000; i++) {}
 
         printf("Pulse Width: %d\n", pulse_width_x);
         printf("Thumbstick X: %d\n", thumbstick_values[0]);

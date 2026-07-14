@@ -48,6 +48,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/servos_pwm.c
     Core/Src/thumbstick.c
     Core/Src/servo_control.c
+    Core/Src/systick.c
     Core/Src/uart.c
 )
 
