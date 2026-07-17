@@ -54,8 +54,15 @@ void adc_thumbstick_read(int* values)
 {
     for (int i = 0; i < 2; i++)
     {
-        while (!(ADC1->SR & ADC_SR_EOC)) {}
+        while (!(ADC1->SR & (ADC_SR_EOC | ADC_SR_OVR))) {}
+
+        if (ADC1->SR & ADC_SR_OVR) 
+        {
+            ADC1->SR &= ~ADC_SR_OVR;
+            return;
+        }
 
         *values++ = ADC1->DR;
     }
+
 }
