@@ -1,5 +1,5 @@
-#ifndef THUMBSTICK_H
-#define THUMBSTICH_H
+#ifndef __THUMBSTICK_H
+#define __THUMBSTICH_H
 
 #include "stm32f4xx.h"
 

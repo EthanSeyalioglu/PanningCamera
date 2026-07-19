@@ -1,5 +1,4 @@
 #include "uart.h"
-#include "stm32f446xx.h"
 
 #define GPIO_MODER2_AF      (GPIO_MODER_MODER2_1)
 #define GPIO_PA2_AF7        (GPIO_AFRL_AFSEL2_0 | GPIO_AFRL_AFSEL2_1 | GPIO_AFRL_AFSEL2_2)
@@ -8,8 +7,8 @@
 #define BAUDRATE            115200
 
 
-static uint16_t calculate_brr(uint32_t periph_clk, uint32_t baudrate);
 static void uart_write(int ch);
+
 
 int __io_putchar(int ch)
 {
@@ -18,7 +17,7 @@ int __io_putchar(int ch)
 }
 
 
-void uart_init(void)
+void uart_debug_init(void)
 {
     /*** Set PA2 for USART2 TX ***/
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
@@ -39,12 +38,12 @@ void uart_init(void)
     USART2->BRR = calculate_brr(CLK_FREQ, BAUDRATE);
 }
 
-void uart_tx_start(void)
+void uart_debug_tx_start(void)
 {
     USART2->CR1 |= USART_CR1_TE;
 }
 
-void uart_tx_stop(void)
+void uart_debug_tx_stop(void)
 {
     USART2->CR1 &= ~USART_CR1_TE;
 }
@@ -58,7 +57,7 @@ static void uart_write(int ch)
 }
 
 
-static uint16_t calculate_brr(uint32_t periph_clk, uint32_t baudrate)
+uint16_t calculate_brr(uint32_t periph_clk, uint32_t baudrate)
 {
 	return ((periph_clk + (baudrate / 2U)) / baudrate);
 }

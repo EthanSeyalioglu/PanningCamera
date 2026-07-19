@@ -49,7 +49,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/thumbstick.c
     Core/Src/servo_control.c
     Core/Src/systick.c
-    Core/Src/uart.c
+    Core/Src/uart_debug.c
+    Core/Src/uart_esp.c
 )
 
 # Add include paths

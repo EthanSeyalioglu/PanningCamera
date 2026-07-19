@@ -1,5 +1,5 @@
-#ifndef SERVOS_PWM_H
-#define SERVOS_PWM_H
+#ifndef __SERVOS_PWM_H
+#define __SERVOS_PWM_H
 
 #include <stdint.h>
 #include "stm32f4xx.h"

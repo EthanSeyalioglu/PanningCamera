@@ -3,14 +3,14 @@
 #include "servos_pwm.h"
 #include "servo_control.h"
 #include "uart.h"
-#include "systick.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 
 ServoDirection thumbstick_get_direction(int thumbstick_val_x);
 uint16_t update_pulse_width(ServoDirection direction, uint16_t pulse_width);
+
 
 int main(void)
 {
@@ -20,9 +20,13 @@ int main(void)
     // uint32_t current_system_tick;
     // uint32_t last_servo_update;
 
-    uart_init();
-    uart_tx_start();
-    printf("UART Initialized\n\n");
+    uart_debug_init();
+    uart_debug_tx_start();
+    printf("UART_Debug Initialized\n\n");
+
+    uart_esp_init();
+    uart_esp_rx_start();
+    printf("UART_ESP Initialized");
 
     adc_thumbstick_init();
     adc_thumbstick_config();
@@ -68,9 +72,14 @@ int main(void)
             // last_servo_update = current_system_tick;
         // }
 
-        printf("Pulse Width: %d\n", pulse_width_x);
-        printf("Thumbstick X: %d\n", thumbstick_values[0]);
-        printf("Servo Direction: %d\n\n", direction_x);
+        if (msg_ready)
+        {
+            printf("ESP32 Message: %s\n", msg_buffer);
+            msg_ready = 0;
+        }
+        // printf("Pulse Width: %d\n", pulse_width_x);
+        // printf("Thumbstick X: %d\n", thumbstick_values[0]);
+        // printf("Servo Direction: %d\n\n", direction_x);
         // printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
     }
 }
