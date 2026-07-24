@@ -15,7 +15,7 @@ uint16_t update_pulse_width(ServoDirection direction, uint16_t pulse_width);
 int main(void)
 {
     uint16_t pulse_width_x, pulse_width_y;
-    int thumbstick_values[2];
+    uint16_t thumbstick_values[2];
     ServoDirection direction_x, direction_y;
     // uint32_t current_system_tick;
     // uint32_t last_servo_update;
@@ -28,8 +28,8 @@ int main(void)
     uart_esp_rx_start();
     printf("UART_ESP Initialized");
 
-    adc_thumbstick_init();
-    adc_thumbstick_config();
+    adc_thumbstick_dma_init();
+    // adc_thumbstick_config();
     printf("ADC Initialized\n\n");
 
     tim2_pwm_init();
@@ -51,7 +51,7 @@ int main(void)
 
     while (1)
     {
-        adc_thumbstick_scan();
+        // adc_thumbstick_scan();
         adc_thumbstick_read(thumbstick_values);
 
         direction_x = thumbstick_get_direction(thumbstick_values[0]);
@@ -79,7 +79,7 @@ int main(void)
         }
         // printf("Pulse Width: %d\n", pulse_width_x);
         // printf("Thumbstick X: %d\n", thumbstick_values[0]);
-        // printf("Servo Direction: %d\n\n", direction_x);
-        // printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
+        printf("Servo Direction: %d\n\n", direction_x);
+        printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
     }
 }
