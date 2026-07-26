@@ -17,8 +17,8 @@ int main(void)
     uint16_t pulse_width_x, pulse_width_y;
     uint16_t thumbstick_values[2];
     ServoDirection direction_x, direction_y;
-    // uint32_t current_system_tick;
-    // uint32_t last_servo_update;
+    uint32_t current_system_tick;
+    uint32_t last_servo_update;
 
     uart_debug_init();
     printf("UART_Debug Initialized\n\n");
@@ -38,9 +38,9 @@ int main(void)
     servo_x_set_position(pulse_width_x);
     servo_y_set_position(pulse_width_y);
 
-    systick_init_ms(10U);
+    systick_init_ms(1U);
 
-    // last_servo_update = system_get_ticks();
+    last_servo_update = system_get_ticks();
 
     while (1)
     {
@@ -49,20 +49,17 @@ int main(void)
         direction_x = thumbstick_get_direction(thumbstick_values[0]);
         direction_y = thumbstick_get_direction(thumbstick_values[1]);
 
-        // current_system_tick = system_get_ticks();
-        // if (current_system_tick - last_servo_update >= 5)
-        // {
-        if (systick_cycle_complete())
+        current_system_tick = system_get_ticks();
+        if (current_system_tick - last_servo_update >= 5)
         {
             pulse_width_x = update_pulse_width(direction_x, pulse_width_x);
             pulse_width_y = update_pulse_width(direction_y, pulse_width_y);
             
             servo_x_set_position(pulse_width_x);
             servo_y_set_position(pulse_width_y);
-        }
 
-            // last_servo_update = current_system_tick;
-        // }
+            last_servo_update = current_system_tick;
+        }
 
         if (msg_ready)
         {
