@@ -21,27 +21,20 @@ int main(void)
     // uint32_t last_servo_update;
 
     uart_debug_init();
-    uart_debug_tx_start();
     printf("UART_Debug Initialized\n\n");
 
     uart_esp_init();
-    uart_esp_rx_start();
     printf("UART_ESP Initialized");
 
     adc_thumbstick_dma_init();
-    // adc_thumbstick_config();
     printf("ADC Initialized\n\n");
 
     tim2_pwm_init();
-    tim2_servo_pwm_config();
     tim3_pwm_init();
-    tim3_servo_pwm_config();
     pwm_start();
     printf("PWM Initialized\n\n");
 
-
     pulse_width_x = pulse_width_y = SERVO_CENTER;
-
     servo_x_set_position(pulse_width_x);
     servo_y_set_position(pulse_width_y);
 
@@ -51,7 +44,6 @@ int main(void)
 
     while (1)
     {
-        // adc_thumbstick_scan();
         adc_thumbstick_read(thumbstick_values);
 
         direction_x = thumbstick_get_direction(thumbstick_values[0]);
@@ -64,7 +56,7 @@ int main(void)
         {
             pulse_width_x = update_pulse_width(direction_x, pulse_width_x);
             pulse_width_y = update_pulse_width(direction_y, pulse_width_y);
-
+            
             servo_x_set_position(pulse_width_x);
             servo_y_set_position(pulse_width_y);
         }
