@@ -14,10 +14,10 @@ typedef enum
 #define THUMBSTICK_CENTER       512
 #define THUMBSTICK_DEADZONE     50
 
-#define SERVO_MIN               500
+#define SERVO_MIN               400
 #define SERVO_CENTER            1400
 #define SERVO_MAX               2400
-#define SERVO_STEP              20
+#define SERVO_STEP              5
 
 
 ServoDirection thumbstick_get_direction(int thumbstick_val_x);

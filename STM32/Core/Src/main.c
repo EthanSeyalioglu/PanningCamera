@@ -50,7 +50,7 @@ int main(void)
         direction_y = thumbstick_get_direction(thumbstick_values[1]);
 
         current_system_tick = system_get_ticks();
-        if (current_system_tick - last_servo_update >= 5)
+        if (current_system_tick - last_servo_update >= 2)
         {
             pulse_width_x = update_pulse_width(direction_x, pulse_width_x);
             pulse_width_y = update_pulse_width(direction_y, pulse_width_y);
@@ -61,14 +61,14 @@ int main(void)
             last_servo_update = current_system_tick;
         }
 
-        if (msg_ready)
-        {
-            printf("ESP32 Message: %s\n", msg_buffer);
-            msg_ready = 0;
-        }
-        // printf("Pulse Width: %d\n", pulse_width_x);
+        // if (msg_ready)
+        // {
+        //     printf("ESP32 Message: %s\n", msg_buffer);
+        //     msg_ready = 0;
+        // }
+        printf("Pulse Width X: %d\n", pulse_width_x);
         // printf("Thumbstick X: %d\n", thumbstick_values[0]);
-        printf("Servo Direction: %d\n\n", direction_x);
-        printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
+        // printf("Servo Direction: %d\n", direction_x);
+        // printf("Thumbstick X: %d\nThumbstick Y: %d\n\n", thumbstick_values[0], thumbstick_values[1]);
     }
 }
