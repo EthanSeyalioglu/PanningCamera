@@ -35,6 +35,8 @@ void uart_esp_init(void)
     USART1->BRR = calculate_brr(CLK_FREQ, BAUDRATE);
 
     NVIC_EnableIRQ(USART1_IRQn);
+
+    uart_esp_rx_start();
 }
 
 

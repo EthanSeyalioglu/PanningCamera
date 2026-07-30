@@ -15,7 +15,7 @@ void systick_init_ms(uint8_t period_ms)
     SysTick->VAL = 0;
 
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
-    // SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
     SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
 }
 
@@ -31,7 +31,7 @@ uint32_t system_get_ticks()
 }
 
 
-// void SysTick_Handler(void)
-// {
-//     system_ticks++;
-// }
+void SysTick_Handler(void)
+{
+    system_ticks++;
+}

@@ -36,6 +36,8 @@ void uart_debug_init(void)
     USART2->CR2 &= ~USART_CR2_STOP;
 
     USART2->BRR = calculate_brr(CLK_FREQ, BAUDRATE);
+
+    uart_debug_tx_start();
 }
 
 void uart_debug_tx_start(void)

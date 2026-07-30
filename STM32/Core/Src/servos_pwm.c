@@ -12,6 +12,8 @@
 #define SERVO_TIMER_ARR         20000 - 1
 #define SERVO_CENTER_PULSE      1400
 
+void tim2_servo_pwm_config(void);
+void tim3_servo_pwm_config(void);
 
 
 void tim2_pwm_init(void)
@@ -26,6 +28,8 @@ void tim2_pwm_init(void)
     GPIOA->AFR[0] |= GPIO_PA5_AF1;    
 
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+
+    tim2_servo_pwm_config();
 }
 
 void tim2_servo_pwm_config(void)
@@ -73,6 +77,8 @@ void tim3_pwm_init(void)
     GPIOA->AFR[0] |= GPIO_PA6_AF2;    
 
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+
+    tim3_servo_pwm_config();
 }
 
 void tim3_servo_pwm_config(void)

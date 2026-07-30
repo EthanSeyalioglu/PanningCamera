@@ -5,10 +5,8 @@
 #include "stm32f4xx.h"
 
 void tim2_pwm_init(void);
-void tim2_servo_pwm_config(void);
 
 void tim3_pwm_init(void);
-void tim3_servo_pwm_config(void);
 
 void pwm_start(void);
 void pwm_stop(void);
