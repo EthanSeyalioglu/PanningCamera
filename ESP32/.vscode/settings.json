@@ -4,7 +4,7 @@
   "idf.openOcdConfigs": [
     "board/esp32-wrover-kit-3.3v.cfg"
   ],
-  "idf.port": "detect",
+  "idf.port": "/dev/tty.usbserial-0001",
   "idf.currentSetup": "/Users/ethanseyalioglu/.espressif/v6.0.2/esp-idf",
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32"
@@ -14,5 +14,6 @@
     "--background-index",
     "--query-driver=**",
     "--compile-commands-dir=/Users/ethanseyalioglu/EmbeddedProjects/ServoPanner/ESP32/build"
-  ]
+  ],
+  "idf.flashType": "UART"
 }
