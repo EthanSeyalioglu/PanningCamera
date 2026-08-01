@@ -8,6 +8,7 @@
 #include "nvs_flash.h"
 #include "wifi.h"
 #include "uart_stm.h"
+#include "web_server.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
@@ -37,6 +38,8 @@ void app_main(void)
 
     wifi_init_sta();
     uart_stm_init();
+
+    start_webserver();
 
 
     xTaskCreate(tx_task, "uart_tx_task", TX_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 2, NULL);
