@@ -1,4 +1,5 @@
 #include "web_server.h"
+#include "servo_cmd.h"
 
 
 #define EXAMPLE_HTTP_QUERY_KEY_MAX_LEN  (64)
@@ -146,6 +147,74 @@ static const httpd_uri_t echo = {
     .user_ctx  = NULL
 };
 
+static esp_err_t servo_move_post_handler(httpd_req_t* req)
+{
+    char content[128];
+
+    int received = httpd_req_recv(req, content, sizeof(content) - 1);
+    if (received <= 0) {
+        if (received == HTTPD_SOCK_ERR_TIMEOUT) {
+            httpd_resp_send_408(req);
+        }
+        return ESP_FAIL;
+    }
+
+    content[received] = '\0';
+
+    cJSON* json = cJSON_Parse(content);
+    if (json == NULL)
+    {
+        httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Invalid JSON");
+        return ESP_FAIL;
+    }
+
+    servo_cmd_t cmd = {
+        .pan = PAN_NONE,
+        .tilt = TILT_NONE
+    };
+
+    cJSON* pan = cJSON_GetObjectItem(json, "pan");
+    cJSON* tilt = cJSON_GetObjectItem(json, "tilt");
+
+    if (cJSON_IsString(pan))
+    {
+        if (strcmp(pan->valuestring, "LEFT") == 0)
+        {
+            cmd.pan = PAN_LEFT;
+        }
+        else if (strcmp(pan->valuestring, "RIGHT") == 0)
+        {
+            cmd.pan = PAN_RIGHT;
+        }
+    }
+    if (cJSON_IsString(tilt))
+    {
+        if (strcmp(tilt->valuestring, "UP") == 0)
+        {
+            cmd.pan = TILT_UP;
+        }
+        else if (strcmp(pan->valuestring, "DOWN") == 0)
+        {
+            cmd.pan = TILT_DOWN;
+        }
+    }
+
+    cJSON_Delete(json);
+
+    uart_add_servo_cmd(&cmd);
+
+    httpd_send(req, "ok", 3);
+
+    return ESP_OK;
+}
+
+static const httpd_uri_t servo_move = {
+    .uri       = "/servo_move",
+    .method    = HTTP_POST,
+    .handler   = servo_move_post_handler,
+    .user_ctx  = NULL
+};
+
 
 esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err)
 {
@@ -178,6 +247,7 @@ httpd_handle_t start_webserver(void)
         ESP_LOGI(TAG, "Registering URI handlers");
         httpd_register_uri_handler(server, &hello);
         httpd_register_uri_handler(server, &echo);
+        httpd_register_uri_handler(server, &servo_move);
 
         return server;
     }

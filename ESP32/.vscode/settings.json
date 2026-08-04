@@ -15,5 +15,6 @@
     "--query-driver=**",
     "--compile-commands-dir=/Users/ethanseyalioglu/EmbeddedProjects/ServoPanner/ESP32/build"
   ],
-  "idf.flashType": "UART"
+  "idf.flashType": "UART",
+  "chat.disableAIFeatures": true
 }

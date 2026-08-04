@@ -1,13 +1,25 @@
 #include "uart_stm.h"
+#include "servo_cmd.h"
 
 static const int RX_BUF_SIZE = 1024;
+
+static QueueHandle_t uart_tx_queue;
 
 #define TXD_PIN 4
 #define RXD_PIN 5
 #define UART_BAUD_RATE 115200
 
+
 void uart_stm_init(void)
 {
+    uart_tx_queue = xQueueCreate(1, sizeof(servo_cmd_t));
+
+    if (uart_tx_queue == NULL)
+    {
+        ESP_LOGE("UART", "Failed to create UART queue");
+        return;
+    }
+
     const uart_config_t uart_config = {
         .baud_rate = UART_BAUD_RATE,
         .data_bits = UART_DATA_8_BITS,
@@ -20,6 +32,11 @@ void uart_stm_init(void)
     uart_driver_install(UART_NUM_1, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
     uart_param_config(UART_NUM_1, &uart_config);
     uart_set_pin(UART_NUM_1, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+}
+
+void uart_add_servo_cmd(const servo_cmd_t* cmd)
+{
+    xQueueOverwrite(uart_tx_queue, cmd);
 }
 
 int sendData(const char* logName, const char* data)
