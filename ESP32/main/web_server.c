@@ -191,11 +191,11 @@ static esp_err_t servo_move_post_handler(httpd_req_t* req)
     {
         if (strcmp(tilt->valuestring, "UP") == 0)
         {
-            cmd.pan = TILT_UP;
+            cmd.tilt = TILT_UP;
         }
-        else if (strcmp(pan->valuestring, "DOWN") == 0)
+        else if (strcmp(tilt->valuestring, "DOWN") == 0)
         {
-            cmd.pan = TILT_DOWN;
+            cmd.tilt = TILT_DOWN;
         }
     }
 

@@ -47,6 +47,23 @@ int sendData(const char* logName, const char* data)
     return txBytes;
 }
 
+void servo_move_tx_task(void *arg)
+{
+    servo_cmd_t cmd;
+
+    static const char *TAG = "SERVO_CMD_TX_TASK";
+    esp_log_level_set(TAG, ESP_LOG_INFO);
+
+    while (1)
+    {
+        if (xQueueReceive(uart_tx_queue, &cmd, portMAX_DELAY) == pdTRUE)
+        {
+            int txBytes = uart_write_bytes(UART_NUM_1, (const char*) &cmd, sizeof(cmd));
+            ESP_LOGI(TAG, "Wrote command bytes:\n Pan: %d\n Tilt: %d", cmd.pan, cmd.tilt);
+        }
+    }
+}
+
 void tx_task(void *arg)
 {
     static const char *TX_TASK_TAG = "TX_TASK";

@@ -4,22 +4,22 @@
 typedef enum
 {
     PAN_NONE = 0,
-    PAN_RIGHT,
-    PAN_LEFT
+    PAN_RIGHT = 1,
+    PAN_LEFT = 2
 } pan_direction_t;
 
 typedef enum
 {
     TILT_NONE = 0,
-    TILT_UP,
-    TILT_DOWN
+    TILT_UP = 1,
+    TILT_DOWN = 2
 } tilt_direction_t;
 
 
 typedef struct
 {
-    pan_direction_t pan;
-    tilt_direction_t tilt;
+    uint8_t pan;
+    uint8_t tilt;
 } servo_cmd_t;
 
 

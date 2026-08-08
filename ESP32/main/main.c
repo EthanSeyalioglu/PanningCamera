@@ -42,5 +42,5 @@ void app_main(void)
     start_webserver();
 
 
-    xTaskCreate(tx_task, "uart_tx_task", TX_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(servo_move_tx_task, "servo_move_tx_task", TX_TASK_STACK_SIZE, NULL, configMAX_PRIORITIES - 2, NULL);
 }

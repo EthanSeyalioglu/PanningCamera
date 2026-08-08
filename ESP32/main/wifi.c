@@ -1,7 +1,11 @@
 #include "wifi.h"
 
-#define ESP_WIFI_SSID      "xSevder"
-#define ESP_WIFI_PASS      "sevder1312"
+// #define ESP_WIFI_SSID      "xSevder"
+// #define ESP_WIFI_PASS      "sevder1312"
+
+#define ESP_WIFI_SSID      "ev"
+#define ESP_WIFI_PASS      "147258369"
+
 #define ESP_MAXIMUM_RETRY  5
 
 
