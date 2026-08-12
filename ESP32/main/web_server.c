@@ -86,6 +86,10 @@ static esp_err_t hello_get_handler(httpd_req_t *req)
     httpd_resp_set_hdr(req, "Custom-Header-1", "Custom-Value-1");
     httpd_resp_set_hdr(req, "Custom-Header-2", "Custom-Value-2");
 
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "POST, OPTIONS");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "Content-Type");
+
     /* Send response with custom headers and body set as the
      * string passed in user context*/
     const char* resp_str = (const char*) req->user_ctx;
@@ -96,6 +100,18 @@ static esp_err_t hello_get_handler(httpd_req_t *req)
     if (httpd_req_get_hdr_value_len(req, "Host") == 0) {
         ESP_LOGI(TAG, "Request headers lost");
     }
+    
+    return ESP_OK;
+}
+
+static esp_err_t hello_options_handler(httpd_req_t *req)
+{
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "POST, OPTIONS");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "Content-Type");
+
+    httpd_resp_send(req, NULL, 0);
+
     return ESP_OK;
 }
 
@@ -103,6 +119,15 @@ static const httpd_uri_t hello = {
     .uri       = "/hello",
     .method    = HTTP_GET,
     .handler   = hello_get_handler,
+    /* Let's pass response string in user
+     * context to demonstrate it's usage */
+    .user_ctx  = "Hello World!"
+};
+
+static const httpd_uri_t hello_options = {
+    .uri       = "/hello",
+    .method    = HTTP_OPTIONS,
+    .handler   = hello_options_handler,
     /* Let's pass response string in user
      * context to demonstrate it's usage */
     .user_ctx  = "Hello World!"
@@ -203,7 +228,22 @@ static esp_err_t servo_move_post_handler(httpd_req_t* req)
 
     uart_add_servo_cmd(&cmd);
 
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "POST, OPTIONS");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "Content-Type");
+
     httpd_send(req, "ok", 3);
+
+    return ESP_OK;
+}
+
+static esp_err_t servo_move_options_handler(httpd_req_t *req)
+{
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "POST, OPTIONS");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "Content-Type");
+
+    httpd_resp_send(req, NULL, 0);
 
     return ESP_OK;
 }
@@ -212,6 +252,13 @@ static const httpd_uri_t servo_move = {
     .uri       = "/servo_move",
     .method    = HTTP_POST,
     .handler   = servo_move_post_handler,
+    .user_ctx  = NULL
+};
+
+static const httpd_uri_t servo_move_options = {
+    .uri       = "/servo_move",
+    .method    = HTTP_OPTIONS,
+    .handler   = servo_move_options_handler,
     .user_ctx  = NULL
 };
 
@@ -248,6 +295,8 @@ httpd_handle_t start_webserver(void)
         httpd_register_uri_handler(server, &hello);
         httpd_register_uri_handler(server, &echo);
         httpd_register_uri_handler(server, &servo_move);
+        httpd_register_uri_handler(server, &servo_move_options);
+        httpd_register_uri_handler(server, &hello_options);
 
         return server;
     }

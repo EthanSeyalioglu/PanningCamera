@@ -5,9 +5,9 @@
 
 typedef enum
 {
-    LEFT = -1,
-    CENTER = 0,
-    RIGHT = 1
+    DIR_NONE = 0,
+    DIR_RIGHT = 1,
+    DIR_LEFT = 2
 } ServoDirection;
 
 
@@ -17,7 +17,7 @@ typedef enum
 #define SERVO_MIN               400
 #define SERVO_CENTER            1400
 #define SERVO_MAX               2400
-#define SERVO_STEP              5
+#define SERVO_STEP              300
 
 
 ServoDirection thumbstick_get_direction(int thumbstick_val_x);
